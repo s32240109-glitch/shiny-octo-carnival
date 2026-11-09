@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Contact Us — AquaSense{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <span class="eyebrow">Contact Us</span>
+    <h1>Tim di balik AquaSense</h1>
+    <p>Halaman Contact Us ini menampilkan informasi mengenai anggota kelompok pembuat website: lima mahasiswa dengan pembagian peran dari pengolahan data dan model SVM sampai antarmuka, laporan, dan pengujian sistem.</p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    <div class="about-grid">
+      <div class="card about-card">
+        <span class="about-badge">Tugas Besar</span>
+        <h2>Mata Kuliah Framework</h2>
+        <p>
+          AquaSense dibuat untuk menyelesaikan tugas besar mata kuliah Framework. Proyek ini
+          mengintegrasikan model machine learning, aplikasi web, database, dan laporan teknis
+          dalam satu sistem yang berjalan end-to-end.
+        </p>
+        <dl class="about-facts">
+          <div><dt>Topik</dt><dd>Analisis kualitas air budidaya ikan nila</dd></div>
+          <div><dt>Model</dt><dd>Support Vector Machine (kernel polynomial)</dd></div>
+          <div><dt>Dataset</dt><dd>IoT Water Quality &amp; Tilapia · 4.313 baris bersih</dd></div>
+          <div><dt>Stack</dt><dd>FastAPI · Jinja2 · SQLite · Scikit-Learn</dd></div>
+        </dl>
+      </div>
+
+      <div class="card about-card about-values">
+        <h3>Prinsip kerja kelompok</h3>
+        <ul class="value-list">
+          <li><span class="value-no">01</span><div><strong>Kolaborasi lintas peran</strong><p>Model, backend, frontend, laporan, dan QA dikerjakan paralel dengan kontrak data yang jelas.</p></div></li>
+          <li><span class="value-no">02</span><div><strong>Validasi menyeluruh</strong><p>Setiap tahap diuji: evaluasi model, validasi form, sampai end-to-end testing sebelum demo.</p></div></li>
+          <li><span class="value-no">03</span><div><strong>Transparan &amp; dapat dipertanggungjawabkan</strong><p>Metrik model, batasan sistem, dan pembagian tugas ditulis terbuka di laporan.</p></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">Anggota kelompok</span>
+      <h2>Pembagian tugas</h2>
+      <p>Setiap anggota memegang tanggung jawab utama pada satu bagian, namun tetap saling membantu saat integrasi.</p>
+    </div>
+
+    <div class="member-grid">
+      {% for member in members %}
+      <article class="member-card">
+        <div class="member-top">
+          <span class="avatar avatar-{{ loop.index }}">{{ member.name[0]|upper }}</span>
+          <span class="member-tag">{{ member.tag }}</span>
+        </div>
+        <h3>{{ member.name }}</h3>
+        <span class="member-role">{{ member.role }}</span>
+        <p>{{ member.desc }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="contact-strip">
+      <div>
+        <h2>Ada pertanyaan tentang sistem?</h2>
+        <p>Sampaikan saat presentasi demo atau melalui kontak kelompok. Kami terbuka untuk masukan mengenai model maupun antarmuka.</p>
+      </div>
+      <div class="contact-points">
+        <span><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m4.5 7 7.5 6 7.5-6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg> Kelompok Tugas Besar Framework</span>
+        <span><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.7"/></svg> Laboratorium Komputer Kampus</span>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

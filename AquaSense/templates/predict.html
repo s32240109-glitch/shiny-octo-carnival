@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block title %}Form Prediksi — AquaSense{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <span class="eyebrow">Analisis kualitas air</span>
+    <h1>Form Input Parameter Sensor</h1>
+    <p>Masukkan hasil pembacaan sensor kolam. Model SVM akan mengklasifikasikan kondisi air dan menyimpan hasilnya ke riwayat.</p>
+  </div>
+</section>
+
+<div class="container">
+  {% if error %}
+  <div class="alert alert-error" role="alert">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 8v5m0 3.5v.5M10.3 3.9 2.7 17a2 2 0 0 0 1.7 3h15.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div><strong>Input belum valid.</strong> {{ error }}</div>
+  </div>
+  {% endif %}
+
+  {% if result %}
+  <section class="result-card {% if result.is_risk %}is-risk{% else %}is-stable{% endif %}" id="result" data-autoscroll>
+    <div class="result-main">
+      <div class="result-copy">
+        <span class="badge {% if result.is_risk %}badge-risk{% else %}badge-stable{% endif %}">
+          {% if result.is_risk %}At Risk{% else %}Stable{% endif %}
+        </span>
+        <h2>{% if result.is_risk %}Kondisi air berisiko{% else %}Kondisi air stabil{% endif %}</h2>
+        <p>
+          Model SVM memprediksi kolam <strong>{{ saved_log.pond_name }}</strong> dalam kondisi
+          <strong>{{ result.status_label }}</strong> dengan keyakinan {{ '%.1f'|format(result.confidence_percent) }}%.
+        </p>
+        <div class="result-meta">
+          <span><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> ID log #{{ saved_log.id }}</span>
+          <span><svg viewBox="0 0 24 24" fill="none"><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/></svg> {{ saved_log.created_at.strftime('%d %b %Y · %H:%M') }}</span>
+        </div>
+      </div>
+
+      <div class="confidence-donut" style="--pct: {{ result.confidence_percent }};">
+        <div class="donut-inner">
+          <strong>{{ '%.1f'|format(result.confidence_percent) }}%</strong>
+          <span>keyakinan</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-details">
+      <div class="proba-panel">
+        <h3>Probabilitas kelas</h3>
+        {% set stable_pct = result.probabilities['Stable'] * 100 %}
+        {% set risk_pct = result.probabilities['At Risk'] * 100 %}
+        <div class="proba-row">
+          <div class="proba-head"><span>Stable</span><strong>{{ '%.1f'|format(stable_pct) }}%</strong></div>
+          <div class="proba-track"><i class="stable" style="width: {{ stable_pct }}%"></i></div>
+        </div>
+        <div class="proba-row">
+          <div class="proba-head"><span>At Risk</span><strong>{{ '%.1f'|format(risk_pct) }}%</strong></div>
+          <div class="proba-track"><i class="risk" style="width: {{ risk_pct }}%"></i></div>
+        </div>
+
+        <div class="input-recap">
+          <div><span>Suhu</span><strong>{{ '%.2f'|format(values.temperature) }} °C</strong></div>
+          <div><span>DO</span><strong>{{ '%.2f'|format(values.dissolved_oxygen) }} mg/L</strong></div>
+          <div><span>pH</span><strong>{{ '%.2f'|format(values.ph) }}</strong></div>
+          <div><span>Turbidity</span><strong>{{ '%.2f'|format(values.turbidity) }} NTU</strong></div>
+        </div>
+      </div>
+
+      <div class="reco-panel">
+        <h3>Rekomendasi tindakan</h3>
+        <p>{{ recommendation }}</p>
+        {% if warnings %}
+        <div class="note-box">
+          <strong>Catatan di luar rentang data latih</strong>
+          <ul>
+            {% for w in warnings %}<li>{{ w }}</li>{% endfor %}
+          </ul>
+          <p class="note-small">Prediksi pada nilai di luar rentang data latih perlu diverifikasi manual karena model belum banyak belajar pada area tersebut.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="result-actions">
+      <a href="/history" class="btn btn-primary">Lihat Riwayat</a>
+      <a href="/predict" class="btn btn-ghost">Analisis Data Baru</a>
+    </div>
+  </section>
+  {% endif %}
+
+  <div class="predict-layout">
+    <div class="card form-card">
+      <div class="card-head">
+        <div>
+          <h2>Parameter kualitas air</h2>
+          <p>Isi nilai aktual dari sensor atau alat ukur kolam.</p>
+        </div>
+        <span class="model-chip">SVM · poly</span>
+      </div>
+
+      <form method="post" action="/predict" class="predict-form" id="predict-form" novalidate>
+        <div class="field field-full">
+          <label for="pond_name">Nama kolam <span class="opt">(opsional)</span></label>
+          <div class="input-wrap">
+            <input type="text" id="pond_name" name="pond_name" maxlength="100"
+                   placeholder="Contoh: Kolam A-01" value="{{ pond_name }}">
+          </div>
+          <p class="hint">Nama ini akan muncul pada tabel riwayat analisis.</p>
+        </div>
+
+        <div class="field-grid">
+          {% for feat in feature_meta %}
+          <div class="field" data-field="{{ feat.key }}">
+            <label for="{{ feat.key }}">
+              {{ feat.label }}
+              <span class="unit-tag">{{ feat.unit }}</span>
+            </label>
+            <div class="input-row">
+              <input type="number" id="{{ feat.key }}" name="{{ feat.key }}"
+                     value="{{ values[feat.key] }}" min="{{ feat.min }}" max="{{ feat.max }}"
+                     step="{{ feat.step }}" inputmode="decimal" required>
+              <input type="range" class="range" data-range-for="{{ feat.key }}"
+                     value="{{ values[feat.key] }}" min="{{ feat.min }}" max="{{ feat.max }}"
+                     step="{{ feat.step }}" aria-label="Slider {{ feat.label }}">
+            </div>
+            <div class="field-foot">
+              <span>Ideal: {{ feat.ideal }}</span>
+              <span class="range-value">{{ values[feat.key] }}</span>
+            </div>
+            <p class="hint">{{ feat.hint }}</p>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="submit-btn">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2 4.5 13.5H11l-1 8.5L19.5 10H13l0-8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+            <span class="btn-label">Analisis Sekarang</span>
+          </button>
+          <button type="reset" class="btn btn-ghost">Reset form</button>
+          <span class="form-note">Data akan disimpan otomatis ke database riwayat.</span>
+        </div>
+      </form>
+    </div>
+
+    <aside class="predict-aside">
+      <div class="card aside-card">
+        <h3>Panduan parameter</h3>
+        <ul class="guide-list">
+          {% for feat in feature_meta %}
+          <li>
+            <span class="guide-icon guide-{{ feat.icon }}"></span>
+            <div>
+              <strong>{{ feat.label }}</strong>
+              <span>{{ feat.unit }} · ideal {{ feat.ideal }}</span>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="card aside-card aside-accent">
+        <h3>Tentang model</h3>
+        <p>Model dilatih dari {{ model_info.rows_clean }} sampel sensor dengan {{ model_info.features|length }} fitur.</p>
+        <dl class="aside-stats">
+          <div><dt>Akurasi uji</dt><dd>{{ '%.2f'|format(model_info.accuracy * 100) }}%</dd></div>
+          <div><dt>F1-macro CV</dt><dd>{{ '%.4f'|format(model_info.cv_f1) }}</dd></div>
+          <div><dt>Kelas</dt><dd>2</dd></div>
+        </dl>
+      </div>
+
+      <div class="aside-tip">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V17h5v-1.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 20h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <p><strong>Tips:</strong> gunakan angka desimal dengan titik, misalnya <code>27.5</code>. Koma juga otomatis dikonversi.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+{% endblock %}

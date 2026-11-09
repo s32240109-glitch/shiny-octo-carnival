@@ -1,0 +1,20 @@
+Parameter terbaik: {'C': 1, 'degree': 2, 'gamma': 'scale', 'kernel': 'poly'}
+F1-macro CV: 0.9989
+Accuracy train: 0.9994
+Accuracy test: 1.0000
+Precision macro: 1.0000
+Recall macro: 1.0000
+F1 macro: 1.0000
+
+Confusion Matrix:
+[[141   0]
+ [  0 722]]
+
+              precision    recall  f1-score   support
+
+     At Risk       1.00      1.00      1.00       141
+      Stable       1.00      1.00      1.00       722
+
+    accuracy                           1.00       863
+   macro avg       1.00      1.00      1.00       863
+weighted avg       1.00      1.00      1.00       863

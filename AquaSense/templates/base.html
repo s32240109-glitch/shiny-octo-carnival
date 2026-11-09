@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AquaSense — sistem analisis kualitas air kolam budidaya ikan nila berbasis machine learning SVM.">
+  <title>{% block title %}AquaSense — Analisis Kualitas Air{% endblock %}</title>
+  <link rel="icon" href="{{ url_for('static', path='img/favicon.svg') }}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="bg-decor" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="grid-overlay"></span>
+  </div>
+
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a href="/" class="brand" aria-label="AquaSense Home">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 2.5c3.8 4.3 6.5 7.6 6.5 11a6.5 6.5 0 1 1-13 0c0-3.4 2.7-6.7 6.5-11Z" fill="currentColor" opacity=".22"/>
+            <path d="M12 2.5c3.8 4.3 6.5 7.6 6.5 11a6.5 6.5 0 1 1-13 0c0-3.4 2.7-6.7 6.5-11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            <path d="M8.6 13.4c1.4-1.9 4.1-3.2 6.9-2.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="brand-text">Aqua<span>Sense</span></span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Buka menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav" id="primary-nav" aria-label="Navigasi utama">
+        <a href="/" class="nav-link {% if active == 'home' %}is-active{% endif %}">Home</a>
+        <a href="/predict" class="nav-link {% if active == 'predict' %}is-active{% endif %}">Prediksi</a>
+        <a href="/history" class="nav-link {% if active == 'history' %}is-active{% endif %}">Riwayat</a>
+        <a href="/contact" class="nav-link {% if active == 'contact' %}is-active{% endif %}">Contact Us</a>
+        <a href="/predict" class="btn btn-primary btn-sm nav-cta">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 19V5m0 14h16M8 15l3.5-4 3 2.5L20 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Mulai Prediksi
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="brand brand-footer">
+          <span class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2.5c3.8 4.3 6.5 7.6 6.5 11a6.5 6.5 0 1 1-13 0c0-3.4 2.7-6.7 6.5-11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="brand-text">Aqua<span>Sense</span></span>
+        </a>
+        <p>Sistem pemantauan kualitas air kolam ikan nila berbasis IoT dan Support Vector Machine. Dibuat untuk tugas besar mata kuliah Framework.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigasi</h4>
+        <a href="/">Home</a>
+        <a href="/predict">Form Prediksi</a>
+        <a href="/history">Riwayat Analisis</a>
+        <a href="/contact">Contact Us</a>
+      </div>
+      <div class="footer-col">
+        <h4>Teknologi</h4>
+        <span>FastAPI + Jinja2</span>
+        <span>Scikit-Learn SVM</span>
+        <span>SQLite + SQLAlchemy</span>
+        <span>HTML · CSS · JavaScript</span>
+      </div>
+      <div class="footer-col">
+        <h4>Dataset</h4>
+        <span>IoT Water Quality &amp; Tilapia</span>
+        <span>4.383 baris · 4 fitur sensor</span>
+        <span>Kelas: Stable / At Risk</span>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>&copy; {{ year }} AquaSense · Kelompok Tugas Besar Framework</p>
+      <p class="footer-note">Model ini adalah alat bantu skrining, bukan pengganti pengawasan ahli akuakultur.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="{{ url_for('static', path='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% block title %}AquaSense — Pantau Kualitas Air Kolam Nila{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">
+        <span class="pulse-dot"></span>
+        IoT Monitoring · Machine Learning · Aquaculture
+      </span>
+      <h1>Pantau kualitas air kolam nila <span class="grad-text">dalam hitungan detik.</span></h1>
+      <p class="lede">
+        AquaSense membaca empat parameter sensor — suhu, oksigen terlarut, pH, dan turbidity —
+        lalu mengklasifikasikan kondisi air sebagai <strong>Stable</strong> atau <strong>At Risk</strong>
+        menggunakan model Support Vector Machine.
+      </p>
+      <div class="hero-actions">
+        <a href="/predict" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 19V5m0 14h16M8 15l3.5-4 3 2.5L20 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Analisis Air Sekarang
+        </a>
+        <a href="#model" class="btn btn-ghost">Pelajari Model SVM</a>
+      </div>
+      <ul class="hero-points">
+        <li><svg viewBox="0 0 24 24" fill="none"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Akurasi uji 100%</li>
+        <li><svg viewBox="0 0 24 24" fill="none"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Simpan riwayat otomatis</li>
+        <li><svg viewBox="0 0 24 24" fill="none"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Rekomendasi tindakan</li>
+      </ul>
+    </div>
+
+    <div class="hero-visual">
+      <div class="preview-card">
+        <div class="preview-head">
+          <div>
+            <span class="preview-label">Kolam sampel</span>
+            <h3>Kolam A-01</h3>
+          </div>
+          <span class="live-badge"><span class="pulse-dot"></span> Sensor aktif</span>
+        </div>
+
+        <div class="preview-status">
+          <div class="status-ring" style="--pct: 99.6;">
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+              <circle class="ring-value" cx="60" cy="60" r="52"></circle>
+            </svg>
+            <div class="ring-text">
+              <strong>Stable</strong>
+              <span>keyakinan 99,6%</span>
+            </div>
+          </div>
+          <div class="preview-note">
+            <span class="badge badge-stable">Kondisi aman</span>
+            <p>Seluruh parameter berada pada rentang ideal untuk budidaya ikan nila.</p>
+          </div>
+        </div>
+
+        <div class="mini-metrics">
+          <div class="mini-metric">
+            <span class="mm-label">Suhu</span>
+            <strong>27,5 <small>°C</small></strong>
+            <span class="mm-bar"><i style="width: 62%"></i></span>
+          </div>
+          <div class="mini-metric">
+            <span class="mm-label">Oksigen</span>
+            <strong>6,70 <small>mg/L</small></strong>
+            <span class="mm-bar"><i style="width: 74%"></i></span>
+          </div>
+          <div class="mini-metric">
+            <span class="mm-label">pH</span>
+            <strong>7,89</strong>
+            <span class="mm-bar"><i style="width: 81%"></i></span>
+          </div>
+          <div class="mini-metric">
+            <span class="mm-label">Turbidity</span>
+            <strong>3,30 <small>NTU</small></strong>
+            <span class="mm-bar"><i style="width: 58%"></i></span>
+          </div>
+        </div>
+      </div>
+      <span class="float-chip chip-a"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 1 0 9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> Prediksi &lt; 1 detik</span>
+      <span class="float-chip chip-b"><svg viewBox="0 0 24 24" fill="none"><path d="M4 17V9m5 8V5m5 12v-6m5 6V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg> 4.313 data latih</span>
+    </div>
+  </div>
+</section>
+
+<section class="stat-band">
+  <div class="container stat-grid">
+    <div class="stat-item">
+      <strong>4.313</strong>
+      <span>Sampel air bersih setelah preprocessing</span>
+    </div>
+    <div class="stat-item">
+      <strong>4</strong>
+      <span>Parameter sensor IoT sebagai fitur model</span>
+    </div>
+    <div class="stat-item">
+      <strong>1.0000</strong>
+      <span>F1-score macro pada data uji</span>
+    </div>
+    <div class="stat-item">
+      <strong>SVM</strong>
+      <span>Kernel polynomial, C=1, degree=2</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow">Tujuan website &amp; alur sistem</span>
+      <h2>Tujuan website: keputusan cepat dari data sensor kolam</h2>
+      <p>Tujuan AquaSense adalah membantu pembudidaya memantau kualitas air kolam nila, mendeteksi kondisi berisiko lebih awal, dan menyimpan riwayat analisis dalam satu tempat. Alurnya dibuat sederhana agar teknisi kolam bisa mengambil tindakan cepat tanpa membaca data mentah.</p>
+    </div>
+
+    <div class="steps">
+      <article class="step-card">
+        <span class="step-no">01</span>
+        <span class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </span>
+        <h3>Input parameter air</h3>
+        <p>Masukkan hasil pembacaan sensor: suhu, oksigen terlarut, pH, dan tingkat kekeruhan.</p>
+      </article>
+      <article class="step-card">
+        <span class="step-no">02</span>
+        <span class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v4m0 10v4M3 12h4m10 0h4M5.6 5.6l2.8 2.8m7.2 7.2 2.8 2.8m0-12.8-2.8 2.8M8.4 15.6l-2.8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </span>
+        <h3>Klasifikasi SVM</h3>
+        <p>Model menstandardisasi input lalu menghitung hyperplane untuk menentukan status air.</p>
+      </article>
+      <article class="step-card">
+        <span class="step-no">03</span>
+        <span class="step-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M8 3h8a2 2 0 0 1 2 2v14l-6-3-6 3V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </span>
+        <h3>Riwayat &amp; rekomendasi</h3>
+        <p>Hasil tersimpan di database beserta saran tindakan, dan bisa dihapus kapan saja.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="model">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Model machine learning</span>
+      <h2>Support Vector Machine untuk data kualitas air</h2>
+      <p>
+        SVM mencari hyperplane dengan margin terbesar antar kelas. Kernel polynomial dipilih setelah
+        GridSearchCV 5-fold, dan <code>class_weight='balanced'</code> dipakai karena jumlah data
+        <em>At Risk</em> jauh lebih sedikit dari <em>Stable</em>.
+      </p>
+    </div>
+
+    <div class="model-grid">
+      <div class="panel">
+        <h3>Konfigurasi terbaik</h3>
+        <table class="param-table">
+          <tbody>
+            <tr><th>Algoritma</th><td>{{ model_info.algorithm }}</td></tr>
+            <tr><th>Kernel</th><td>{{ model_info.kernel }}</td></tr>
+            <tr><th>C</th><td>{{ model_info.best_params.C }}</td></tr>
+            <tr><th>Degree</th><td>{{ model_info.best_params.degree }}</td></tr>
+            <tr><th>Gamma</th><td>{{ model_info.best_params.gamma }}</td></tr>
+            <tr><th>Cross-validation</th><td>5-fold stratified · F1-macro {{ '%.4f'|format(model_info.cv_f1) }}</td></tr>
+            <tr><th>Fitur</th><td>4 parameter sensor</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="mt">Parameter input</h3>
+        <ul class="feature-list">
+          {% for feat in feature_meta %}
+          <li>
+            <span class="feature-dot"></span>
+            <span><strong>{{ feat.label }}</strong> · {{ feat.unit }}<em>ideal {{ feat.ideal }}</em></span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3>Performa pada data uji</h3>
+        <div class="metric-list">
+          {% set metrics = [('Accuracy', model_info.accuracy), ('Precision (macro)', model_info.precision), ('Recall (macro)', model_info.recall), ('F1-Score (macro)', model_info.f1)] %}
+          {% for name, value in metrics %}
+          <div class="metric-row">
+            <div class="metric-top"><span>{{ name }}</span><strong>{{ '%.4f'|format(value) }}</strong></div>
+            <div class="metric-track"><i style="width: {{ (value * 100)|round(1) }}%"></i></div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="chart-grid">
+          <figure>
+            <img src="{{ url_for('static', path='img/charts/03_confusion_matrix.png') }}" alt="Confusion matrix model SVM pada data uji">
+            <figcaption>Confusion matrix data uji — 141 At Risk &amp; 722 Stable terprediksi tepat.</figcaption>
+          </figure>
+          <figure>
+            <img src="{{ url_for('static', path='img/charts/05_metrik_evaluasi.png') }}" alt="Grafik metrik evaluasi model SVM">
+            <figcaption>Ringkasan metrik evaluasi: accuracy, precision, recall, dan F1.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="dataset">
+  <div class="container dataset-grid">
+    <div class="dataset-copy">
+      <span class="eyebrow">Dataset</span>
+      <h2>IoT Water Quality &amp; Tilapia</h2>
+      <p>
+        Data berasal dari pemantauan sensor IoT pada kolam budidaya ikan nila. Dari 4.383 baris,
+        preprocessing membuang duplikat dan kolom yang berpotensi <em>data leakage</em> seperti
+        <code>Thermal Risk Index</code> dan kolom waktu, menyisakan 4.313 baris bersih.
+      </p>
+
+      <div class="class-bars">
+        <div class="class-bar">
+          <div class="cb-head"><span>Stable</span><strong>3.608 · 83,7%</strong></div>
+          <div class="cb-track"><i class="stable" style="width: 83.7%"></i></div>
+        </div>
+        <div class="class-bar">
+          <div class="cb-head"><span>At Risk</span><strong>705 · 16,3%</strong></div>
+          <div class="cb-track"><i class="risk" style="width: 16.3%"></i></div>
+        </div>
+      </div>
+
+      <ul class="check-list">
+        <li>Duplikat dihapus, missing value diimputasi median.</li>
+        <li>StandardScaler hanya di-fit pada data latih untuk mencegah kebocoran data.</li>
+        <li>Split 80:20 secara stratified dengan random_state=42.</li>
+        <li>Outlier sensor dipertahankan karena merepresentasikan kondisi At Risk yang valid.</li>
+      </ul>
+    </div>
+
+    <div class="dataset-visual">
+      <figure class="chart-card">
+        <img src="{{ url_for('static', path='img/charts/01_distribusi_kelas.png') }}" alt="Distribusi kelas dataset kualitas air">
+        <figcaption>Distribusi kelas menunjukkan ketidakseimbangan 5:1 antara Stable dan At Risk.</figcaption>
+      </figure>
+      <figure class="chart-card">
+        <img src="{{ url_for('static', path='img/charts/02_korelasi_fitur.png') }}" alt="Heatmap korelasi antar fitur sensor">
+        <figcaption>Korelasi antar empat fitur sensor tetap rendah, sehingga tidak ada redundansi besar.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-section">
+  <div class="container">
+    <div class="cta-card">
+      <div>
+        <span class="eyebrow eyebrow-light">Siap mencoba?</span>
+        <h2>Masukkan data sensor kolammu, dapatkan status air dalam sekejap.</h2>
+        <p>Hasil prediksi otomatis tersimpan di riwayat dan dilengkapi rekomendasi tindakan.</p>
+      </div>
+      <div class="cta-actions">
+        <a href="/predict" class="btn btn-light">Mulai Prediksi</a>
+        <a href="/history" class="btn btn-outline-light">Lihat Riwayat</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
